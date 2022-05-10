@@ -68,7 +68,8 @@ public class Planet {
      * @return force between the planet and planet p in the x direction
      */
     public double calcForceExertedByX(Planet p) {
-
+        double xOffset = p.xxPos - this.xxPos;
+        return calcForceExertedBy(p) * (xOffset / calcDistance(p));
     }
 
     /**
@@ -77,6 +78,63 @@ public class Planet {
      * @return force between the planet and planet p in the y direction
      */
     public double calcForceExertedByY(Planet p) {
+        double yOffset = p.yyPos - this.yyPos;
+        return calcForceExertedBy(p) * (yOffset / calcDistance(p));
+    }
 
+    /**
+     *
+     * @param p planet object array
+     * @return force in the network in the x direction
+     */
+    public double calcNetForceExertedByX(Planet[] p) {
+        double result = 0;
+        for(Planet e: p) {
+            if(this.equals(e)) {
+                continue;
+            }
+            result += calcForceExertedByX(e);
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param p planet object array
+     * @return force in the network in the x direction
+     */
+    public double calcNetForceExertedByY(Planet[] p) {
+        double result = 0;
+        for(Planet e: p) {
+            if(this.equals(e)) {
+                continue;
+            }
+            result += calcForceExertedByY(e);
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param time
+     * @param xForce
+     * @param yForce
+     */
+    public void update(double time, double xForce, double yForce) {
+        double ax = xForce / this.mass;
+        double ay = yForce / this.mass;
+
+        this.xxVel = this.xxVel + time * ax;
+        this.yyVel = this.yyVel + time * ay;
+
+        this.xxPos = this.xxPos + time * this.xxVel;
+        this.yyPos = this.yyPos + time * this.yyVel;
+    }
+
+    /**
+     *
+     */
+    public void draw() {
+        StdDraw.picture(xxPos, yyPos, "images/" + imgFileName);
     }
 }
